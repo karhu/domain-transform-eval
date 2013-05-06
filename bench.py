@@ -115,8 +115,8 @@ os.makedirs(outFolderPath)
 
 printSeparator()
 
+# run measurements
 results = {}
-
 for f in folders:
     p = os.path.join(IMPL_PATH,f)
     print f
@@ -138,6 +138,9 @@ for f in folders:
     results[f] = variantResults
 
 # save results
+benchFolderPath = os.path.join(SCRIPT_PATH,'bench_results')
+if not os.path.exists(benchFolderPath):
+    os.makedirs(benchFolderPath)
 benchFile = "data_"+datetime.now().strftime('%y_%m_%d__%H_%M')+'.pickle'
 benchDataPath = os.path.join(SCRIPT_PATH,'bench_results',benchFile)
 pickle.dump(results, open(benchDataPath, 'wb'))
