@@ -1,0 +1,52 @@
+
+# config
+#########################################################
+
+COMPILER_FLAGS = [
+    "-O3",
+    "-fno-tree-vectorize"
+]
+
+DEFINES = [
+    # "DO_FUNCTION_PROFILING",
+    "NDEBUG"
+]
+
+# util
+#########################################################
+
+def compilerFlags():
+    return ' '.join(COMPILER_FLAGS)
+
+def defines():
+    return DEFINES
+
+# setup
+##########################################################
+
+env = Environment()
+
+# compiler flags
+env.Append(CCFLAGS=compilerFlags())
+
+# defines
+env.Append(CPPDEFINES=defines())
+
+# execute
+##########################################################
+
+import os.path
+
+AddOption('--variant',
+	dest='variant',
+	type='string',
+	nargs=1,
+	action='store',
+	metavar='DIR')
+
+variant = GetOption('variant')
+
+if variant is None:
+	raise Exception("command line argument --variant is not defined.")
+
+SConscript(os.path.join(variant,"SConscript"), exports='env')
