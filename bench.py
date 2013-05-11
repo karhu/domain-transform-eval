@@ -14,7 +14,7 @@ import pickle
 
 VERBOSE = True
 VERBOSE_BENCH = False
-INPUT_IMAGE = "kyoto_1080p.png"
+INPUT_IMAGE = "bhudda_1080p.png"
 
 #test algorithm parameters
 S = 50
@@ -30,6 +30,19 @@ BENCH_PARAMS = [
 
 # benchmark iterations
 T = 10 
+
+#ignore these implementations
+IGNORE = [
+    # '00_simple_transpose',
+    '01_blocked_transpose',
+    '02_inl_filter_bounds',
+    '03a_inl_row_sat',
+    '03b_recombination',
+    '04a_alt_inl_row_sat',
+    '05_merged',
+    # '06_write_transposed',
+    # 'current',
+]
 
 # globals
 ###########################################################################
@@ -88,10 +101,10 @@ def bench(impl, inputImg, s,r,n,t):
     ]
 
     output = subprocess.check_output(cmd);
-    result = ast.literal_eval(output)
     if VERBOSE_BENCH:
-        print result
+        print output
         printSeparator()
+    result = ast.literal_eval(output)
     return result
 
 
@@ -103,7 +116,7 @@ IMPL_PATH = os.path.join(SCRIPT_PATH,"implementations")
 
 folders = [o for o in os.listdir(IMPL_PATH) if os.path.isdir(os.path.join(IMPL_PATH,o))]
 
-folders = [f for f in folders if not f.startswith('_')]
+folders = [f for f in folders if not f in IGNORE]
 
 # run
 ###########################################################################

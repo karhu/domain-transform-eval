@@ -10,7 +10,7 @@ namespace FunP
     {
         std::string name;
         uint call_counter;
-        double total_cylces;
+        double total_cycles;
         tsc_counter start, end;
     };
 
@@ -56,25 +56,27 @@ namespace FunP
     inline void EndCall(uint i)
     {
         RDTSC(Data[i].end); CPUID();
-        Data[i].total_cylces += ((double)COUNTER_DIFF(Data[i].end, Data[i].start));
+        Data[i].total_cycles += ((double)COUNTER_DIFF(Data[i].end, Data[i].start));
         Data[i].call_counter++;
     }
 
     void PrintData()
     {
 #ifdef DO_FUNCTION_PROFILING
-        std::cout << "-----------------------------------" << std::endl;
-        double total = Data[0].total_cylces / 100.0;
+        std::cout << "'runtime_data': [" << std::endl;
+        double total = Data[0].total_cycles / 100.0;
         for (int i=0; i<N_DATA_LINES; i++)
         {
-            std::cout << Data[i].name << "\n";
-            std::cout << "calls:                " << Data[i].call_counter << "\n";
-            std::cout << "total cycles:         " << Data[i].total_cylces << "\n";
-            std::cout << "cylces/call:          " << Data[i].total_cylces / Data[i].call_counter << "\n";
-            std::cout << "percentage of total:  " << Data[i].total_cylces / total << "\n";
-            std::cout << "-----------------------------------" << std::endl;
+            double cycles_call = Data[i].call_counter == 0 ? 0.0 : Data[i].total_cycles / Data[i].call_counter;
+            std::cout << "{" << std::endl;
+            std::cout << "'data':        '" << Data[i].name << "',\n";
+            std::cout << "'calls':        " << Data[i].call_counter << ",\n";
+            std::cout << "'total_cycles': " << Data[i].total_cycles << ",\n";
+            std::cout << "'cycles_call':  " << cycles_call << ",\n";
+            std::cout << "'percentage':   " << Data[i].total_cycles / total << "\n";
+            std::cout << "}," << std::endl;
         }
-        std::cout << std::endl;
+        std::cout << "]" << std::endl;
 #endif
     }
 

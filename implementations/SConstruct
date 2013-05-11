@@ -5,10 +5,11 @@
 COMPILER_FLAGS = [
     "-O3",
     "-fno-tree-vectorize"
+    # "-march=native"
 ]
 
 DEFINES = [
-    # "DO_FUNCTION_PROFILING",
+    "DO_FUNCTION_PROFILING",
     "NDEBUG"
 ]
 
