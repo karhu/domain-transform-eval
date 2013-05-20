@@ -17,7 +17,7 @@ namespace FunP
 ///////////////////////////////////////////////////////
 // needs edit if more functions should be profiled
 
-    static const uint N_DATA_LINES = 10;
+    static const uint N_DATA_LINES = 9;
 
     static Info Data[N_DATA_LINES] = {
         {"all",0,0.0,{0},{0}},
@@ -27,7 +27,6 @@ namespace FunP
         {"transpose_float",0,0.0,{0},{0}},
         {"transpose_rgb",0,0.0,{0},{0}},
         {"cumsumX",0,0.0,{0},{0}},
-        {"BoxFilterBounds",0,0.0,{0},{0}},
         {"computeRowSAT",0,0.0,{0},{0}},
         {"boxFilter",0,0.0,{0},{0}},
     };
@@ -41,7 +40,6 @@ namespace FunP
         ID_transpose_float,
         ID_transpose_rgb,
         ID_cumsumX,
-        ID_BoxFilterBounds,
         ID_computeRowSAT,
         ID_boxFilter,
     };

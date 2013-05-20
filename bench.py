@@ -23,11 +23,12 @@ N = 3
 
 # bench settings
 BENCH_PARAMS = [
-    # dict(S=50,R=0.5,N=3,IMG='bhudda_200.png'),
+    dict(S=50,R=0.5,N=3,IMG='bhudda_200.png'),
     # dict(S=50,R=0.5,N=3,IMG='bhudda_320.png'),
-    # dict(S=50,R=0.5,N=3,IMG='bhudda_640.png'),
-    dict(S=50,R=0.5,N=3,IMG='bhudda_1080p.png'),
-    # dict(S=50,R=0.5,N=3,IMG='bhudda_2048.png'),
+    dict(S=50,R=0.5,N=3,IMG='bhudda_640.png'),
+    dict(S=50,R=0.5,N=3,IMG='bhudda_1024.png'),
+    # dict(S=50,R=0.5,N=3,IMG='bhudda_1080p.png'),
+    dict(S=50,R=0.5,N=3,IMG='bhudda_2048.png'),
     # dict(S=50,R=0.5,N=3,IMG='bhudda_4k.png'),
     # dict(S=50,R=0.9,N=3),
     # dict(S=50,R=1.4,N=3),
@@ -39,12 +40,12 @@ T = 10
 #ignore these implementations
 IGNORE = [
     #'00_simple_transpose',
-    '01_blocked_transpose',
-    '02_inl_filter_bounds',
+    #'01_blocked_transpose',
+    #'02_inl_filter_bounds',
     '03a_inl_row_sat',
     '03b_recombination',
     '04a_alt_inl_row_sat',
-    '05_merged',
+    #'05_merged',
     'current1',
     'current20_20',
     'current40_40',
@@ -52,9 +53,11 @@ IGNORE = [
     '07_uchar3_2',
     'uchar3_invD',
     '07b_invD',
-    'hmm'
+    'hmm',
+    '08_test',
     #'06_write_transposed',
     # 'current',
+    '07_split_rgb_base'
 ]
 
 # globals
@@ -184,13 +187,27 @@ for (i,bp) in enumerate(BENCH_PARAMS):
         cycles = data[i]['total_cycles'] / data[i]['benchmark_iterations']
         w = data[i]['width']
         h = data[i]['height']
+        n = 3
+        maflops = (14 + 24*n)*h*w + (2 + 6*n)*h*w+3*n
+        madflops = maflops + ((2*h*w + 1)*n + 1)*10
         cycles_per_pixel = cycles / (w*h)
+        maflops_per_cycle = maflops / cycles
+        madflops_per_cycle = madflops / cycles
         bf = data[i]['runtime_data'][-1]['cycles_call'] / (w*h)
-        tmp.append( (cycles, variant,cycles_per_pixel,bf) )
+        tmp.append( (cycles, variant,cycles_per_pixel,bf, maflops_per_cycle, madflops_per_cycle) )
 
     tmp.sort(key= lambda x: x[0])
+    baseidx = None
+    for i in xrange(len(tmp)):
+        if tmp[i][1] == '00_simple_transpose':
+            baseidx = i
+            break
+    base = tmp[baseidx]
+    tmp.remove(base)
+    tmp.append(base)
+
     for t in tmp:
-        print "{0:12} {1:>15.3f}%  {2:>12.1f}    {3:>12.1f}    {4:<40}".format(t[0],100*t[0]/tmp[-1][0],t[2],t[3],t[1])
+        print "{0:<20}, {1:12}, {2:>15.3f}%,  {3:>12.1f},    {4:>12.1f},    {5:>12.4f},    {6:>12.4f}".format(t[1], t[0],100*t[0]/tmp[-1][0],t[2],t[3],t[4],t[5])
 
     printSeparator()
 
