@@ -12,7 +12,7 @@ import pickle
 # settings
 ###########################################################################
 
-VERBOSE = True
+VERBOSE = False
 VERBOSE_BENCH = False
 INPUT_IMAGE = "bhudda_1080p.png"
 
@@ -23,9 +23,14 @@ N = 3
 
 # bench settings
 BENCH_PARAMS = [
-    dict(S=50,R=0.5,N=3),
-    dict(S=50,R=0.9,N=3),
-    dict(S=50,R=1.4,N=3),
+    # dict(S=50,R=0.5,N=3,IMG='bhudda_200.png'),
+    # dict(S=50,R=0.5,N=3,IMG='bhudda_320.png'),
+    # dict(S=50,R=0.5,N=3,IMG='bhudda_640.png'),
+    dict(S=50,R=0.5,N=3,IMG='bhudda_1080p.png'),
+    # dict(S=50,R=0.5,N=3,IMG='bhudda_2048.png'),
+    # dict(S=50,R=0.5,N=3,IMG='bhudda_4k.png'),
+    # dict(S=50,R=0.9,N=3),
+    # dict(S=50,R=1.4,N=3),
 ]
 
 # benchmark iterations
@@ -33,14 +38,22 @@ T = 10
 
 #ignore these implementations
 IGNORE = [
-    # '00_simple_transpose',
+    #'00_simple_transpose',
     '01_blocked_transpose',
     '02_inl_filter_bounds',
     '03a_inl_row_sat',
     '03b_recombination',
     '04a_alt_inl_row_sat',
     '05_merged',
-    # '06_write_transposed',
+    'current1',
+    'current20_20',
+    'current40_40',
+    '07_uchar3',
+    '07_uchar3_2',
+    'uchar3_invD',
+    '07b_invD',
+    'hmm'
+    #'06_write_transposed',
     # 'current',
 ]
 
@@ -146,7 +159,8 @@ for f in folders:
 
     variantResults = []
     for bp in BENCH_PARAMS:
-        result = bench(f,inPath,s=bp['S'],r=bp['R'],n=bp['N'],t=T)
+        inImg = os.path.join(SCRIPT_PATH,'images',bp['IMG'])
+        result = bench(f,inImg,s=bp['S'],r=bp['R'],n=bp['N'],t=T)
         variantResults.append(result)
     results[f] = variantResults
 
@@ -168,11 +182,15 @@ for (i,bp) in enumerate(BENCH_PARAMS):
     tmp = []
     for (variant,data) in results.iteritems():
         cycles = data[i]['total_cycles'] / data[i]['benchmark_iterations']
-        tmp.append( (cycles, variant) )
+        w = data[i]['width']
+        h = data[i]['height']
+        cycles_per_pixel = cycles / (w*h)
+        bf = data[i]['runtime_data'][-1]['cycles_call'] / (w*h)
+        tmp.append( (cycles, variant,cycles_per_pixel,bf) )
 
     tmp.sort(key= lambda x: x[0])
     for t in tmp:
-        print "{0:12} {1:>15.3f}%    {2:<40}".format(t[0],t[0]/tmp[-1][0],t[1])
+        print "{0:12} {1:>15.3f}%  {2:>12.1f}    {3:>12.1f}    {4:<40}".format(t[0],100*t[0]/tmp[-1][0],t[2],t[3],t[1])
 
     printSeparator()
 

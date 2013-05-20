@@ -4,8 +4,10 @@
 
 COMPILER_FLAGS = [
     "-O3",
-    "-fno-tree-vectorize"
-    # "-march=native"
+    # "-fno-tree-vectorize",
+    "-march=native",
+    # "-ffast-math",
+    # "-fassociative-math"
 ]
 
 DEFINES = [
