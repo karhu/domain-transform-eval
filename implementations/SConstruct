@@ -26,8 +26,15 @@ def defines():
 
 # setup
 ##########################################################
+juneslaptop = False
 
-env = Environment()
+if juneslaptop:
+    import os
+    env = Environment(ENV = os.environ)
+
+    env.Append(LINKFLAGS=['-F/opt/local/Library/Frameworks','-F/opt/local/lib','-F/opt/local/lib','-L/opt/local/lib'])
+else:
+    env = Environment()
 
 # compiler flags
 env.Append(CCFLAGS=compilerFlags())
