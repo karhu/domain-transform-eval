@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 import os
 import os.path
@@ -57,7 +58,8 @@ IGNORE = [
     '08_test',
     #'06_write_transposed',
     # 'current',
-    '07_split_rgb_base'
+    '07_split_rgb_base',
+    '11_float_test_base',
 ]
 
 # globals

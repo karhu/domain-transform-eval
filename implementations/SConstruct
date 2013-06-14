@@ -5,7 +5,8 @@
 COMPILER_FLAGS = [
     "-O3",
     # "-fno-tree-vectorize",
-    "-march=native",
+    #"-march=native",
+    "-march=corei7", # SSE instructions are less long than AVX instructions
     # "-ffast-math",
     # "-fassociative-math"
 ]

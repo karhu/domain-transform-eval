@@ -1,0 +1,64 @@
+
+# config
+#########################################################
+
+SOURCE_DIR = "src/"
+
+SOURCES = [
+    "main.cpp"
+]
+
+EXTERNAL_SOURCES = [
+    "io_png/io_png.c"
+]
+
+INCLUDE_PATHS = [
+	"external/"
+]
+
+LIBS = [
+	"png"
+]
+
+BUILD_DIR = "build/"
+
+BIN_DIR = "bin/"
+
+EXECUTABLE = "DomainTransform"
+
+# util
+#########################################################
+
+def sources():
+    tmp = SOURCES + ["external/"+ s for s in EXTERNAL_SOURCES]
+    return [BUILD_DIR+s for s in tmp]
+
+def includePaths():
+	return [BUILD_DIR+s for s in INCLUDE_PATHS]
+
+def libs():
+	return LIBS
+
+def target():
+    return BIN_DIR + EXECUTABLE
+
+# execute
+##########################################################
+
+
+Import('env')
+env = env.Clone()
+
+env.Program(target=target(), source=sources())
+
+# include paths
+env.Append(CPPPATH=includePaths())
+
+# libs
+env.Append(LIBS = libs())
+
+#build dir
+env.VariantDir(BUILD_DIR, SOURCE_DIR, duplicate=0)
+
+# remove these folders on clean
+env.Clean(".",[BUILD_DIR,BIN_DIR])
